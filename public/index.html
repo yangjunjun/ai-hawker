@@ -93,6 +93,7 @@
   let saved={};
   try { saved=JSON.parse(localStorage.getItem('hawker-mvp-state') || '{}'); } catch {}
   const state={ product: typeof saved.product==='string'?saved.product:'红富士苹果',price:typeof saved.price==='string'?saved.price:'5元一斤',sellingPoint:typeof saved.sellingPoint==='string'?saved.sellingPoint:'新鲜到货', voice: voices.some(x=>x.id===saved.voice)?saved.voice:'northeast-man', selected:0, rate:Number.isInteger(saved.rate)?Math.max(-30,Math.min(30,saved.rate)):10, loop: !!saved.loop, delay:[2000,4000,6000].includes(saved.delay)?saved.delay:4000, scripts: [] };
+  const isStaticPages = /\.github\.io$/i.test(location.hostname);
   let serverReady=false; let activeToken=0; let audio=null; let audioUrl=null; let speech=null; let timer=null; let tick=null; let currentBlob=null; let currentKey=''; let isPlaying=false; let progressStart=0; let progressEstimate=0; let toastTimer=null;
   const escapeHtml = str => String(str).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function store() {try{localStorage.setItem('hawker-mvp-state',JSON.stringify({product:state.product,price:state.price,sellingPoint:state.sellingPoint,voice:state.voice,rate:state.rate,loop:state.loop,delay:state.delay}));}catch{}}
@@ -190,7 +191,7 @@
   }
   async function download(){
     const text=getText();if(!text){toast('请先输入叫卖文案');return;}
-    if(!serverReady){toast('MP3 下载需要启动 Node 服务：运行 npm install && npm start，然后通过 localhost:3000 打开页面。');return;}
+    if(!serverReady){toast(isStaticPages ? 'GitHub Pages 只托管前端，MP3 下载需要 Node TTS 后端。请在本地运行 npm install && npm start。' : 'MP3 下载需要启动 Node 服务：运行 npm install && npm start，然后通过 localhost:3000 打开页面。');return;}
     const btn=$('downloadBtn');btn.disabled=true;btn.textContent='正在制作 MP3 …';
     try{
       const blob=await onlineBlob(text);
@@ -202,6 +203,7 @@
     finally{btn.disabled=false;btn.innerHTML='<span>⇩</span> 下载 MP3 音频';}
   }
   async function detectServer(){
+    if(isStaticPages){$('connectionText').textContent='静态体验 · 系统语音';$('downloadBtn').title='GitHub Pages 不运行 Node TTS 服务，下载 MP3 需本地或独立后端';return;}
     if(!/^https?:$/.test(location.protocol))return;
     try{ const r=await fetch('/api/health',{signal:AbortSignal.timeout(2500)});if(!r.ok) return;const j=await r.json();if(!j.ok)return;serverReady=true;$('connectionText').textContent='神经配音已连接';$('connectionText').closest('.top-badge').style.color='#287c55';}catch{}
   }
