@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f7f5f0" />
+  <meta name="description" content="AI 智能叫卖助手：生成叫卖话术、多音色语音试听、循环播放和 MP3 下载。" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>响当当 · AI 智能叫卖助手</title>
+  <style>
+    :root{font-family:Inter,"SF Pro Display",-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:#222522;background:#f7f6f3;font-synthesis:none;--ink:#242625;--muted:#92938e;--orange:#f16a29;--orange-dark:#d9581d;--line:#eae9e4;--card:#fff;--green:#22846a;--shadow:0 18px 52px rgba(38,36,29,.042)}
+    *{box-sizing:border-box}body{margin:0}button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.55}input:focus-visible,textarea:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid #f8b17c;outline-offset:2px}button{border:0}svg{display:block}.app-shell{display:flex;min-height:100vh}.sidebar{width:236px;flex:0 0 236px;background:#222a29;color:#fff;min-height:100vh;padding:30px 17px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}.brand{display:flex;align-items:center;gap:11px;padding:2px 14px 38px}.brand-mark{width:39px;height:39px;background:var(--orange);display:grid;place-items:center;border-radius:13px;color:#fff;box-shadow:0 8px 20px #f16a293d}.brand-text{font-size:22px;font-weight:850;letter-spacing:.5px}.brand-en{font-size:10px;color:#8b9b96;letter-spacing:1.6px;font-weight:700;margin-top:1px}.side-cap{font-size:10px;color:#778681;letter-spacing:1.9px;padding:0 16px;margin-bottom:15px;font-weight:800}.side-link{border-radius:13px;color:#9eaaa5;text-decoration:none;display:flex;align-items:center;gap:12px;padding:13px 14px;font-size:13px;font-weight:600;margin:3px 0;transition:background .2s,color .2s}.side-link .num{font-size:11px;letter-spacing:1px;color:#67736f}.side-link.active{color:#fff;background:#35413e}.side-link.active .num{color:#ffa576}.side-link:hover{background:#303b38;color:white}.side-bottom{margin-top:auto;padding:16px 13px;border:1px solid #43514c;border-radius:17px;background:#303c38}.side-bottom .dot{display:inline-block;width:8px;height:8px;background:#5bc496;border-radius:50%;margin-right:7px}.side-bottom .label{color:#dce7df;font-size:12px;font-weight:700}.side-bottom p{font-size:11px;line-height:1.8;color:#9fada8;margin:8px 0 0}.side-foot{color:#637570;font-size:11px;padding:16px 6px 0}.content{flex:1;min-width:0;padding:25px clamp(22px,3.6vw,56px) 42px;max-width:1600px;margin:0 auto}.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}.breadcrumb{font-size:12px;color:#9b9c98;font-weight:650}.breadcrumb b{color:#565a55}.top-actions{display:flex;gap:12px;align-items:center}.top-badge{display:inline-flex;align-items:center;gap:7px;background:#f1f4ed;color:#547c4d;border:1px solid #e5eadb;border-radius:50px;padding:8px 12px;font-size:11px;font-weight:700}.top-badge .circle{width:6px;height:6px;border-radius:50%;background:#7da874}.avatar{height:33px;width:33px;background:#efe4d5;color:#9a663e;font-weight:800;font-size:12px;display:grid;place-items:center;border-radius:50%}.hero{display:grid;grid-template-columns:1.35fr .75fr;min-height:236px;border-radius:23px;background:#fff4ea;overflow:hidden;position:relative;margin-bottom:28px}.hero-copy{padding:37px 39px;position:relative;z-index:1}.hero-label{font-size:10px;font-weight:900;color:#e1723b;letter-spacing:2.4px;display:flex;gap:8px;align-items:center;margin-bottom:14px}.hero-label i{height:1px;width:23px;background:#ed9d7a}.hero h1{font-size:clamp(27px,2.7vw,39px);line-height:1.33;letter-spacing:-1.4px;margin:0 0 10px;font-weight:900;color:#2b312b}.hero h1 span{color:#e76a33}.hero p{color:#8c8077;margin:0;font-size:13px;line-height:1.9}.hero-art{position:relative;isolation:isolate;display:grid;place-items:center;min-height:218px;background:radial-gradient(circle at 66% 58%,#ffe1c4 0,#ffe5cd 30%,#fff0e2 62%,transparent 70%)}.hero-art:before,.hero-art:after{content:"";position:absolute;border:1px solid #f3c8a6;border-radius:50%;width:245px;height:245px;left:45%;top:50%;transform:translate(-50%,-50%);opacity:.8}.hero-art:after{height:320px;width:320px;opacity:.4}.speaker{width:138px;height:138px;background:linear-gradient(150deg,#343e39,#1e2925);border-radius:34px;transform:rotate(-11deg);box-shadow:0 24px 30px #c7834c4f;display:grid;place-items:center;z-index:1;position:relative}.speaker:before{content:"";position:absolute;inset:13px;border:1px solid #59635e;border-radius:27px}.speaker-cone{border-radius:50%;width:79px;height:79px;background:repeating-radial-gradient(circle,#3b4a43 0 5px,#202925 6px 12px);box-shadow:inset 0 0 0 9px #151e1b,0 4px 2px #1b2621;display:grid;place-items:center}.speaker-cone:after{content:"";width:29px;height:29px;background:linear-gradient(130deg,#f09b63,#a6532a);border:6px solid #2d3731;border-radius:50%}.sound-spark{position:absolute;color:#ee8850;font-size:32px;font-weight:800;z-index:2}.sound-spark.a{top:44px;left:13%}.sound-spark.b{top:27px;right:12%;font-size:21px}.sound-spark.c{bottom:30px;right:14%;font-size:26px}.workflow{display:flex;align-items:center;gap:12px;margin:-1px 0 26px}.flow-step{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:700;color:#939893;white-space:nowrap}.flow-step .n{background:#e8ebe7;color:#87968c;height:24px;width:24px;border-radius:50%;display:grid;place-items:center;font-size:11px}.flow-step.done{color:#4e7765}.flow-step.done .n{background:#dff0e8;color:#34815e}.flow-step.current{color:#d86631}.flow-step.current .n{background:#ffe8dc;color:#d86631}.flow-line{height:1px;width:40px;background:#dfe3dc}.grid-layout{display:grid;grid-template-columns:minmax(0,1.22fr) minmax(315px,.82fr);gap:22px;align-items:start}.left-column,.right-column{display:flex;flex-direction:column;gap:22px}.panel{background:white;border:1px solid #eeeee9;border-radius:21px;padding:25px;box-shadow:var(--shadow)}.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;gap:12px}.panel-h{display:flex;gap:10px;align-items:center}.panel-icon{height:33px;width:33px;border-radius:10px;display:grid;place-items:center;background:#fff0e6;color:var(--orange);font-size:18px}.panel-title{font-size:17px;letter-spacing:-.35px;font-weight:850}.panel-sub{color:#aaa9a4;font-size:11px;margin-top:4px}.step-tag{background:#f5f4f1;color:#a1a29c;font-size:10px;padding:7px 10px;border-radius:50px;font-weight:700;white-space:nowrap}.input-grid{display:grid;grid-template-columns:1.1fr .85fr;gap:15px}.field{display:flex;flex-direction:column;gap:8px;min-width:0}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:750;color:#424841}.field label small{color:#a9aaa4;font-weight:500;font-size:11px;margin-left:5px}.text-input{border:1px solid #e7e8e3;background:#fafbf9;border-radius:11px;height:45px;width:100%;padding:0 14px;outline:none;color:#3b403a;font-size:13px;transition:border .2s}.text-input:focus{border-color:#ee955f;background:#fff}.hint{font-size:11px;color:#aaa9a4}.chips{display:flex;gap:7px;flex-wrap:wrap;padding-top:3px}.chip{background:#f6f6f3;color:#818680;font-size:11px;padding:6px 10px;border-radius:8px;transition:.2s}.chip:hover{background:#fce6d9;color:#c86229}.generate-btn{margin-top:20px;background:var(--orange);color:#fff;width:100%;height:47px;border-radius:11px;font-weight:800;font-size:13px;display:flex;justify-content:center;align-items:center;gap:9px;box-shadow:0 8px 18px #ea74372b;transition:.2s}.generate-btn:hover{background:var(--orange-dark);transform:translateY(-1px)}.scripts-panel{padding-bottom:20px}.scripts-wrap{display:flex;flex-direction:column;gap:11px}.script-card{border:1px solid #e9eae5;border-radius:14px;padding:16px 17px;transition:.2s;position:relative}.script-card.selected{border-color:#f3a16f;background:#fffaf6;box-shadow:0 0 0 2px #fff0e4}.script-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:11px}.script-title{display:flex;gap:8px;align-items:center;font-size:13px;font-weight:800}.script-emoji{width:25px;height:25px;display:grid;place-items:center;background:#fff0de;border-radius:8px;font-size:15px}.script-type{font-size:10px;color:#a6a39c;padding:4px 8px;background:#f6f4f1;border-radius:6px;font-weight:650}.script-card.selected .script-type{background:#ffe8d8;color:#d9783b}.script-editor{border:0;background:transparent;width:100%;min-height:66px;resize:vertical;outline:0;font-size:12.5px;line-height:1.95;color:#4a5049;padding:0;display:block}.script-actions{display:flex;justify-content:space-between;align-items:center;margin-top:11px;padding-top:12px;border-top:1px dashed #ebe9e4}.select-script{display:flex;gap:7px;align-items:center;color:#8c9188;font-size:11px;font-weight:700;padding:5px 0;background:none}.selected .select-script{color:var(--orange)}.radio-circle{width:15px;height:15px;border:1.6px solid #d3d7d1;border-radius:50%;display:grid;place-items:center}.selected .radio-circle{border-color:var(--orange)}.selected .radio-circle:after{content:"";height:7px;width:7px;background:var(--orange);border-radius:50%}.icon-btn{display:flex;gap:6px;align-items:center;color:#818781;background:none;font-size:11px;font-weight:700;padding:7px 8px;border-radius:7px}.icon-btn:hover{background:#f1f0ed;color:#454d45}.icon-btn.play{color:#e37134}.voice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.voice-option{border:1px solid #e9eae5;border-radius:12px;padding:12px 10px;background:#fff;text-align:left;display:flex;align-items:center;gap:10px;min-width:0;transition:.2s}.voice-option:hover{border-color:#f7bb94}.voice-option.selected{background:#fff8f2;border-color:#ef9d72;box-shadow:inset 0 0 0 1px #f9dec8}.voice-avatar{height:32px;width:32px;border-radius:10px;display:grid;place-items:center;flex-shrink:0;font-size:15px}.voice-avatar.orange{color:#dd7134;background:#fff0e4}.voice-avatar.green{color:#408675;background:#e4f5ec}.voice-avatar.blue{color:#5f8dc1;background:#e8f0ff}.voice-avatar.pink{color:#c0778e;background:#fff0f5}.voice-avatar.yellow{color:#a98d30;background:#fff9dd}.voice-avatar.purple{color:#8768b8;background:#f3edff}.voice-label{min-width:0}.voice-name{font-size:11.5px;font-weight:800;color:#444a42;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.voice-desc{font-size:10px;color:#a8a9a4;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;margin-top:4px}.voice-footnote{font-size:10.5px;line-height:1.7;color:#b0aaa5;margin-top:13px}.player-panel{background:#273530;border-color:#273530;color:white;overflow:hidden;position:relative;padding:25px}.player-panel:before{content:"";position:absolute;inset:-60px auto auto 60%;width:245px;height:245px;border-radius:50%;border:1px solid #ffffff0c;box-shadow:0 0 0 45px #ffffff06,0 0 0 95px #ffffff03;pointer-events:none}.player-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:21px;position:relative}.player-head h3{font-size:16px;margin:0}.live-ind{font-size:10px;color:#b0c4ba;background:#3a4b43;padding:6px 9px;border-radius:50px}.playing .live-ind{color:#86dfbb}.playing .live-ind:before{content:"● ";color:#61d8a0}.now-label{font-size:10px;color:#81988d;font-weight:750;letter-spacing:1.3px;margin-bottom:10px}.playing-text{color:#e4eae4;font-size:13px;line-height:1.95;min-height:51px;position:relative;z-index:1}.visualizer{height:82px;display:flex;gap:5px;align-items:center;justify-content:center;margin:17px auto 10px;position:relative}.bar{width:5px;background:linear-gradient(180deg,#f7aa75,#d47843);border-radius:20px;height:var(--h);opacity:.75;transition:height .4s}.playing .bar{animation:pulse 700ms ease-in-out infinite alternate;animation-delay:var(--delay)}@keyframes pulse{0%{height:7px;opacity:.35}100%{height:var(--h);opacity:1}}.player-controls{display:flex;align-items:center;justify-content:center;gap:22px;margin:5px 0 19px}.control-icon{width:39px;height:39px;border:1px solid #52645b;background:#34473e;border-radius:50%;color:#d5e0d8;display:grid;place-items:center;font-size:17px}.control-icon:hover{background:#405c4c}.play-main{height:57px;width:57px;background:var(--orange);color:white;border-radius:50%;display:grid;place-items:center;font-size:21px;box-shadow:0 7px 18px #0004}.play-main:hover{background:#ff7a35}.timeline{display:flex;align-items:center;justify-content:space-between;font-size:10px;color:#8faa9a;margin-bottom:17px}.progress{height:4px;background:#40554a;border-radius:9px;overflow:hidden;margin-bottom:8px}.progress-inner{height:100%;background:#f7a26d;width:0;transition:width 150ms linear}.play-mode{font-size:11px;color:#c2d1c7;border-top:1px solid #415148;padding-top:17px;display:flex;align-items:center;justify-content:space-between;gap:10px}.switch{width:37px;height:21px;border-radius:50px;background:#617068;padding:3px;flex-shrink:0;transition:.2s}.switch:after{content:"";display:block;width:15px;height:15px;background:white;border-radius:50%;transition:.2s}.switch.on{background:#ed884e}.switch.on:after{transform:translateX(16px)}.timing{border:1px solid #4b6355;color:#d9e9df;background:#314339;border-radius:7px;padding:6px 7px;font-size:10px;width:96px;max-width:35%}.export-btn{margin-top:15px;width:100%;height:44px;border-radius:11px;background:#fff;color:#283830;font-size:12px;font-weight:850;display:flex;align-items:center;gap:8px;justify-content:center}.export-btn:hover{background:#f2eee7}.speech-rate{display:flex;align-items:center;gap:12px;margin-top:17px}.speech-rate .cap{font-size:10px;color:#b4c8bc}.speech-rate input{flex:1;min-width:0;accent-color:#f19b69;height:4px}.speech-rate output{color:#f4bc8c;font-size:11px;min-width:35px;text-align:right}.notice{padding:14px 17px;border:1px solid #e8e6df;background:#f2f0e9;border-radius:13px;font-size:11px;color:#888a81;line-height:1.8}.notice strong{color:#5d685b}.notice a{color:#cb7536}.toast{position:fixed;z-index:20;bottom:27px;left:50%;transform:translate(-50%,30px);background:#273630;color:white;padding:12px 18px;border-radius:12px;box-shadow:0 15px 45px #0003;font-size:12px;opacity:0;pointer-events:none;transition:.25s;max-width:min(92vw,550px);text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}.mobile-head{display:none}.work-footer{font-size:11px;color:#aaa9a3;display:flex;justify-content:space-between;margin-top:25px;gap:12px}.loop-details{display:flex;align-items:center;gap:8px}
+    @media(min-width:1400px){.grid-layout{grid-template-columns:minmax(0,1.3fr) minmax(335px,.77fr)}.hero{min-height:240px}}
+    @media(max-width:1050px){.sidebar{width:196px;flex-basis:196px;padding-left:11px;padding-right:11px}.content{padding:22px}.grid-layout{grid-template-columns:1fr}.right-column{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}.right-column .notice{grid-column:1/-1}.voice-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:690px){.sidebar{display:none}.mobile-head{display:flex;align-items:center;justify-content:space-between;background:#27332e;color:#fff;padding:12px 17px}.mobile-brand{font-weight:900;font-size:16px;display:flex;align-items:center;gap:8px}.mobile-brand .logo{background:#ed7134;padding:7px 9px;border-radius:9px}.mobile-head small{font-size:10px;color:#b4c5b6}.content{padding:18px 15px 35px}.topbar{margin-bottom:18px}.hero{grid-template-columns:1fr;min-height:0}.hero-copy{padding:27px 23px 25px}.hero h1{font-size:27px;letter-spacing:-.8px}.hero-art{min-height:105px;overflow:hidden}.speaker{height:75px;width:75px;border-radius:17px}.speaker:before{inset:6px;border-radius:13px}.speaker-cone{width:45px;height:45px}.speaker-cone:after{height:16px;width:16px;border-width:3px}.sound-spark{font-size:16px}.workflow{gap:8px;margin-top:-5px}.flow-line{width:12px}.flow-step{font-size:10px;gap:5px}.flow-step .n{height:20px;width:20px}.grid-layout,.right-column{display:flex;flex-direction:column;gap:15px}.left-column,.right-column{gap:15px;width:100%}.panel{padding:20px 17px;border-radius:17px;width:100%}.panel-head{margin-bottom:18px}.input-grid{gap:11px}.voice-grid{grid-template-columns:1fr 1fr}.voice-option{padding:11px 9px}.voice-name{font-size:11px}.work-footer{display:block}.work-footer span{display:block;margin-top:3px}}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+<div class="mobile-head"><div class="mobile-brand"><span class="logo">◖))</span> 响当当</div><small>AI 智能叫卖助手 · MVP</small></div>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 9h5l7-5v16l-7-5H4V9Z" fill="currentColor"/><path d="M19 7c3 3 3 7 0 10" stroke="currentColor" stroke-linecap="round" stroke-width="2"/></svg></div><div><div class="brand-text">响当当</div><div class="brand-en">HAWKER STUDIO</div></div></div>
+    <div class="side-cap">创作工作台 / STUDIO</div>
+    <a href="#product-panel" class="side-link active" data-nav="product"><span class="num">01</span> 商品信息</a>
+    <a href="#scripts-panel" class="side-link" data-nav="scripts"><span class="num">02</span> 叫卖文案</a>
+    <a href="#voice-panel" class="side-link" data-nav="voice"><span class="num">03</span> 音色与配音</a>
+    <a href="#player-panel" class="side-link" data-nav="player"><span class="num">04</span> 音频工作台</a>
+    <div class="side-bottom"><div class="label"><span class="dot"></span>为街头生意发声</div><p>不必自己喊，也能把好货告诉更多人。三步生成专属叫卖音频。</p></div>
+    <div class="side-foot">© 2026 响当当 · 产品原型 0.1</div>
+  </aside>
+  <main class="content">
+    <header class="topbar"><div class="breadcrumb">工作台 / <b>创建叫卖音频</b></div><div class="top-actions"><span class="top-badge"><i class="circle"></i><span id="connectionText">浏览器试听模式</span></span><div class="avatar">AI</div></div></header>
+    <section class="hero"><div class="hero-copy"><div class="hero-label"><i></i> AI VOICE FOR SMALL BUSINESS</div><h1>好生意，<span>吆喝</span>出来。</h1><p>输入商品和价格，生成专属叫卖词。<br>换个有趣的声音，让顾客忍不住多看一眼。</p></div><div class="hero-art" aria-hidden="true"><span class="sound-spark a">♪</span><span class="sound-spark b">✦</span><span class="sound-spark c">♫</span><div class="speaker"><div class="speaker-cone"></div></div></div></section>
+    <div class="workflow"><div class="flow-step done"><span class="n">✓</span>填写商品</div><span class="flow-line"></span><div class="flow-step current"><span class="n">2</span>生成文案</div><span class="flow-line"></span><div class="flow-step"><span class="n">3</span>配音导出</div></div>
+    <div class="grid-layout">
+      <div class="left-column">
+        <section class="panel" id="product-panel">
+          <div class="panel-head"><div class="panel-h"><div class="panel-icon">▤</div><div><div class="panel-title">今天卖什么好货？</div><div class="panel-sub">介绍你的商品，让文案更贴合实际</div></div></div><div class="step-tag">STEP 01</div></div>
+          <div class="input-grid">
+            <div class="field"><label for="product">商品名称 <small>* 必填</small></label><input maxlength="40" class="text-input" id="product" placeholder="例如：红富士苹果" value="红富士苹果" /></div>
+            <div class="field"><label for="price">售卖价格 <small>* 必填</small></label><input maxlength="32" class="text-input" id="price" placeholder="例如：5元一斤" value="5元一斤" /></div>
+            <div class="field full"><label for="sellingPoint">商品卖点 <small>选填，请填写真实信息</small></label><input maxlength="80" class="text-input" id="sellingPoint" placeholder="例如：新鲜到货、现摘现卖" value="新鲜到货" /></div>
+            <div class="field full"><label>快速尝试 <small>点击换商品</small></label><div class="chips"><button type="button" class="chip" data-preset="apple">红富士苹果</button><button type="button" class="chip" data-preset="watermelon">现切西瓜</button><button type="button" class="chip" data-preset="corn">甜玉米</button><button type="button" class="chip" data-preset="strawberry">草莓</button></div></div>
+          </div>
+          <button class="generate-btn" id="generateBtn" type="button"><span>✦</span> 智能生成 3 条叫卖文案 <span>→</span></button>
+        </section>
+        <section class="panel scripts-panel" id="scripts-panel">
+          <div class="panel-head"><div class="panel-h"><div class="panel-icon">✎</div><div><div class="panel-title">你的专属叫卖文案</div><div class="panel-sub">3 种风格任你挑，还可以直接修改文字</div></div></div><div class="step-tag" id="generatedTag">已生成 3 条</div></div>
+          <div id="scriptsWrap" class="scripts-wrap"></div>
+        </section>
+      </div>
+      <div class="right-column">
+        <section class="panel" id="voice-panel">
+          <div class="panel-head"><div class="panel-h"><div class="panel-icon">♫</div><div><div class="panel-title">挑一个好听的声音</div><div class="panel-sub">点击音色，试听不同的表达方式</div></div></div><div class="step-tag">STEP 02</div></div>
+          <div class="voice-grid" id="voiceGrid"></div>
+          <div class="voice-footnote">注：“东北热情大哥”为普通话男声 + 东北风格文案；真正的方言音色可选择“辽宁女声”。浏览器离线试听时音色取决于系统支持情况。</div>
+        </section>
+        <section class="panel player-panel" id="player-panel">
+          <div class="player-head"><h3>音频工作台</h3><div class="live-ind" id="modeStatus">准备就绪</div></div>
+          <div class="now-label">NOW PLAYING / 当前叫卖</div><div class="playing-text" id="playingText">哎，大伙儿瞧一瞧！今天的红富士苹果，5元一斤！新鲜到货，欢迎来挑！</div>
+          <div class="visualizer" aria-hidden="true" id="visualizer"></div>
+          <div class="player-controls"><button type="button" class="control-icon" id="stopBtn" title="停止播放" aria-label="停止播放">■</button><button type="button" class="play-main" id="playBtn" aria-label="播放语音">▶</button><button type="button" class="control-icon" id="nextBtn" title="切换下一条文案" aria-label="切换下一条文案">⏭</button></div>
+          <div class="progress"><div class="progress-inner" id="progressInner"></div></div><div class="timeline"><span id="playTime">00:00</span><span id="totalTime">自动</span></div>
+          <div class="speech-rate"><label for="rate" class="cap">语速调节</label><input id="rate" type="range" min="-30" max="30" step="5" value="10"/><output id="rateText">+10%</output></div>
+          <div class="play-mode"><span>↻ &nbsp;循环播放</span><div class="loop-details"><select id="loopDelay" class="timing" aria-label="循环间隔"><option value="2000">间隔 2 秒</option><option value="4000" selected>间隔 4 秒</option><option value="6000">间隔 6 秒</option></select><button type="button" id="loopSwitch" class="switch" role="switch" aria-checked="false" aria-label="循环播放开关"></button></div></div>
+          <button type="button" class="export-btn" id="downloadBtn"><span>⇩</span> 下载 MP3 音频</button>
+        </section>
+        <div class="notice"><strong>温馨提示：</strong> 请使用真实商品卖点，合理控制音量和播放时间。在线 MP3 使用第三方 TTS 服务，正式商用前需要更换为有授权及可用性保障的合成接口。</div>
+      </div>
+    </div>
+    <footer class="work-footer"><span>用好听的声音，帮每一份认真经营被听见。</span><span>本地模板文案 · 中文配音 · 一键导出</span></footer>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const voices = [
+    {id:'northeast-man',name:'东北热情大哥',desc:'东北吆喝风 · 男声',icon:'大',className:'orange',tts:'zh-CN-YunjianNeural',browserGender:'male'},
+    {id:'liaoning',name:'辽宁方言女声',desc:'地道辽宁话音色',icon:'辽',className:'green',tts:'zh-CN-liaoning-XiaobeiNeural',browserGender:'female'},
+    {id:'warm-lady',name:'亲切女声',desc:'温柔自然 · 女声',icon:'暖',className:'pink',tts:'zh-CN-XiaoxiaoNeural',browserGender:'female'},
+    {id:'young-man',name:'活泼小哥',desc:'清爽活力 · 男声',icon:'少',className:'blue',tts:'zh-CN-YunxiNeural',browserGender:'male'},
+    {id:'shaanxi',name:'陕西方言女声',desc:'陕西地方口音',icon:'陕',className:'yellow',tts:'zh-CN-shaanxi-XiaoniNeural',browserGender:'female'},
+    {id:'announcer',name:'广播男声',desc:'稳重有力 · 男声',icon:'播',className:'purple',tts:'zh-CN-YunyangNeural',browserGender:'male'}
+  ];
+  const presets = {
+    apple:{product:'红富士苹果',price:'5元一斤',sellingPoint:'新鲜到货'},
+    watermelon:{product:'现切西瓜',price:'10元一盒',sellingPoint:'现切现卖'},
+    corn:{product:'甜玉米',price:'3元一根',sellingPoint:'热乎出锅'},
+    strawberry:{product:'草莓',price:'15元一盒',sellingPoint:'颗颗饱满'}
+  };
+  let saved={};
+  try { saved=JSON.parse(localStorage.getItem('hawker-mvp-state') || '{}'); } catch {}
+  const state={ product: typeof saved.product==='string'?saved.product:'红富士苹果',price:typeof saved.price==='string'?saved.price:'5元一斤',sellingPoint:typeof saved.sellingPoint==='string'?saved.sellingPoint:'新鲜到货', voice: voices.some(x=>x.id===saved.voice)?saved.voice:'northeast-man', selected:0, rate:Number.isInteger(saved.rate)?Math.max(-30,Math.min(30,saved.rate)):10, loop: !!saved.loop, delay:[2000,4000,6000].includes(saved.delay)?saved.delay:4000, scripts: [] };
+  let serverReady=false; let activeToken=0; let audio=null; let audioUrl=null; let speech=null; let timer=null; let tick=null; let currentBlob=null; let currentKey=''; let isPlaying=false; let progressStart=0; let progressEstimate=0; let toastTimer=null;
+  const escapeHtml = str => String(str).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function store() {try{localStorage.setItem('hawker-mvp-state',JSON.stringify({product:state.product,price:state.price,sellingPoint:state.sellingPoint,voice:state.voice,rate:state.rate,loop:state.loop,delay:state.delay}));}catch{}}
+  function toast(msg){ const e=$('toast'); e.textContent=msg; e.classList.add('show');clearTimeout(toastTimer); toastTimer=setTimeout(()=>e.classList.remove('show'),3600);}
+  function trimPoint(v){return v.trim().replace(/[，。！,.!?\s]+$/g,'');}
+  function createScripts(){
+    const product=trimPoint(state.product)||'精选好货';
+    const price=trimPoint(state.price)||'优惠价格';
+    const selling=trimPoint(state.sellingPoint);
+    return [
+      {label:'热情吆喝型',tag:'街头吸睛',icon:'🔥',text:`哎，大伙儿瞧一瞧！今天的${product}，${price}！${selling?selling+'，':''}欢迎来挑！`},
+      {label:'俏皮有趣型',tag:'轻松洗脑',icon:'✨',text:`来啦来啦，好货来啦！${product}，${price}！${selling?selling+'！':''}路过的朋友都来看看，喜欢再带走！`},
+      {label:'简洁实惠型',tag:'清晰直给',icon:'📣',text:`今天推荐${product}，${price}。${selling?selling+'。':''}价格听得明白，商品看得清楚，欢迎选购！`}
+    ];
+  }
+  function renderScripts(){
+    $('scriptsWrap').innerHTML=state.scripts.map((s,index)=>`<div class="script-card ${state.selected===index?'selected':''}" data-card="${index}">
+      <div class="script-top"><div class="script-title"><span class="script-emoji">${s.icon}</span>${escapeHtml(s.label)}</div><span class="script-type">${escapeHtml(s.tag)}</span></div>
+      <textarea maxlength="350" class="script-editor" aria-label="编辑${escapeHtml(s.label)}文案" data-script="${index}" spellcheck="false">${escapeHtml(s.text)}</textarea>
+      <div class="script-actions"><button type="button" class="select-script" data-select="${index}"><span class="radio-circle"></span>${state.selected===index?'当前使用':'设为当前文案'}</button><div style="display:flex;gap:5px"><button type="button" class="icon-btn" data-copy="${index}">▢ 复制</button><button type="button" class="icon-btn play" data-play="${index}">▶ 试听</button></div></div>
+    </div>`).join('');
+    updateCurrentText();
+  }
+  function renderVoices(){ $('voiceGrid').innerHTML=voices.map(v=>`<button type="button" class="voice-option ${v.id===state.voice?'selected':''}" data-voice="${v.id}" aria-pressed="${v.id===state.voice}"><span class="voice-avatar ${v.className}">${v.icon}</span><span class="voice-label"><div class="voice-name">${v.name}</div><div class="voice-desc">${v.desc}</div></span></button>`).join(''); }
+  function updateCurrentText(){ $('playingText').textContent=state.scripts[state.selected]?.text||'请选择一条文案'; }
+  function setPlaying(on,info){isPlaying=on;$('player-panel').classList.toggle('playing',on);$('modeStatus').textContent=info||(on?'正在播报':'准备就绪');$('playBtn').textContent=on?'❚❚':'▶';$('playBtn').setAttribute('aria-label',on?'停止播放':'播放语音');}
+  function setLoop(){ $('loopSwitch').classList.toggle('on',state.loop);$('loopSwitch').setAttribute('aria-checked',String(state.loop));store();}
+  function getText(){return (state.scripts[state.selected]?.text||'').trim();}
+  function stop(){
+    activeToken++;clearTimeout(timer); clearInterval(tick);timer=null;tick=null;
+    if(audio){ audio.pause();audio.onended=null;audio.onerror=null;audio.src='';audio=null; }
+    if(audioUrl){URL.revokeObjectURL(audioUrl);audioUrl=null;}
+    if(window.speechSynthesis) speechSynthesis.cancel();
+    speech=null;setPlaying(false);$('progressInner').style.width='0%';$('playTime').textContent='00:00';$('totalTime').textContent='自动';
+  }
+  function formatTime(seconds){ if(!Number.isFinite(seconds))return'00:00';const s=Math.max(0,Math.floor(seconds));return`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`; }
+  function progressLoop(token,seconds,realAudio){
+    clearInterval(tick);progressStart=performance.now();progressEstimate=seconds;
+    tick=setInterval(()=>{
+      if(token!==activeToken){clearInterval(tick);return;}
+      const elapsed=realAudio ? (audio?.currentTime||0) : (performance.now()-progressStart)/1000;
+      const duration=realAudio ? (audio?.duration||seconds) : seconds;
+      $('progressInner').style.width=`${Math.min(98,(elapsed/Math.max(duration,.1))*100)}%`;
+      $('playTime').textContent=formatTime(elapsed);
+      $('totalTime').textContent=formatTime(duration);
+    },200);
+  }
+  function complete(token){
+    if(token!==activeToken)return;
+    clearInterval(tick); $('progressInner').style.width='100%';
+    if(state.loop){setPlaying(true,'循环等待中');timer=setTimeout(()=>{if(token===activeToken) start(true);},state.delay);}
+    else{setPlaying(false,'播放完成');}
+  }
+  function getCurrentVoice(){return voices.find(v=>v.id===state.voice)||voices[0];}
+  function browserSpeak(text,token){
+    if(!('speechSynthesis' in window)){setPlaying(false);toast('当前浏览器不支持语音朗读，请使用 Chrome / Edge。');return;}
+    speechSynthesis.cancel();
+    const ut = new SpeechSynthesisUtterance(text); speech=ut;
+    ut.lang='zh-CN';ut.rate=Math.max(.65,Math.min(1.4,1+state.rate/100));ut.pitch=state.voice==='northeast-man'? .84:1;
+    const available=speechSynthesis.getVoices().filter(v=>/^zh/i.test(v.lang));
+    if(available.length){const prefer=getCurrentVoice().browserGender==='male' ? /(male|yun|男)/i : /(female|xia|女)/i;ut.voice=available.find(v=>prefer.test(v.name))||available[0];}
+    ut.onend=()=>complete(token);
+    ut.onerror=ev=>{if(token===activeToken){setPlaying(false,'语音服务不可用');if(ev.error!=='canceled'&&ev.error!=='interrupted')toast('浏览器语音播放失败，请检查系统是否安装中文语音。');}};
+    progressLoop(token,Math.max(3,text.length*.25),false);
+    setPlaying(true,'浏览器语音试听');
+    speechSynthesis.speak(ut);
+  }
+  async function onlineBlob(text){
+    const v=getCurrentVoice();const key=JSON.stringify([text,v.tts,state.rate]);
+    if(currentBlob&&currentKey===key)return currentBlob;
+    const response=await fetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,voice:v.tts,rate:state.rate})});
+    if(!response.ok){const err=await response.json().catch(()=>({error:'TTS 服务错误'})); throw new Error(err.error||'在线服务不可用');}
+    const blob=await response.blob(); if(!blob.size)throw new Error('音频文件为空');
+    currentBlob=blob;currentKey=key;return blob;
+  }
+  async function start(isLoop=false){
+    const text=getText();if(!text){toast('请先输入或生成叫卖文案');return;}
+    stop();const token=activeToken;
+    if(serverReady){
+      setPlaying(true,'正在合成语音…');$('progressInner').style.width='0%';
+      try {
+        const blob=await onlineBlob(text);
+        if(token!==activeToken)return;
+        const url=URL.createObjectURL(blob);
+        audio=new Audio(url);audioUrl=url;
+        audio.onended=()=>{if(audioUrl){URL.revokeObjectURL(audioUrl);audioUrl=null;}complete(token); };
+        audio.onerror=()=>{if(audioUrl){URL.revokeObjectURL(audioUrl);audioUrl=null;}if(token===activeToken){toast('音频播放失败，已切换为浏览器语音');browserSpeak(text,token);}};
+        await audio.play();
+        if(token!==activeToken){audio.pause();if(audioUrl){URL.revokeObjectURL(audioUrl);audioUrl=null;}return;}
+        setPlaying(true,isLoop?'循环播放中':'神经语音播放中');progressLoop(token,Math.max(2,text.length*.25),true);
+        return;
+      } catch(err){ if(token!==activeToken)return;toast(`${err.message}，已尝试浏览器语音试听。`); }
+    }
+    browserSpeak(text,token);
+  }
+  async function download(){
+    const text=getText();if(!text){toast('请先输入叫卖文案');return;}
+    if(!serverReady){toast('MP3 下载需要启动 Node 服务：运行 npm install && npm start，然后通过 localhost:3000 打开页面。');return;}
+    const btn=$('downloadBtn');btn.disabled=true;btn.textContent='正在制作 MP3 …';
+    try{
+      const blob=await onlineBlob(text);
+      const url=URL.createObjectURL(blob);const a=document.createElement('a');
+      a.href=url;a.download=`${(state.product||'叫卖音频').replace(/[\\/:*?"<>|]/g,'').slice(0,22)}-${getCurrentVoice().name}.mp3`;
+      document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+      toast('MP3 已生成并开始下载');
+    }catch(e){toast(`下载失败：${e.message}`);}
+    finally{btn.disabled=false;btn.innerHTML='<span>⇩</span> 下载 MP3 音频';}
+  }
+  async function detectServer(){
+    if(!/^https?:$/.test(location.protocol))return;
+    try{ const r=await fetch('/api/health',{signal:AbortSignal.timeout(2500)});if(!r.ok) return;const j=await r.json();if(!j.ok)return;serverReady=true;$('connectionText').textContent='神经配音已连接';$('connectionText').closest('.top-badge').style.color='#287c55';}catch{}
+  }
+  function generate(){
+    const product=$('product').value.trim();const price=$('price').value.trim();
+    if(!product){$('product').focus();toast('请填写商品名称');return;}
+    if(!price){$('price').focus();toast('请填写售卖价格');return;}
+    stop();state.product=product;state.price=price;state.sellingPoint=$('sellingPoint').value.trim();state.scripts=createScripts();state.selected=0;currentBlob=null;currentKey='';store();renderScripts();$('generatedTag').textContent='刚刚生成 3 条';toast('三条风格文案已生成，可以直接编辑或试听');
+  }
+  $('scriptsWrap').addEventListener('input',e=>{const index=Number(e.target?.dataset?.script);if(!Number.isInteger(index)||!(index>=0&&index<3))return;state.scripts[index].text=e.target.value;if(state.selected===index)updateCurrentText();currentBlob=null;currentKey='';});
+  $('scriptsWrap').addEventListener('click',e=>{
+    const select=e.target.closest('[data-select]');const play=e.target.closest('[data-play]');const copy=e.target.closest('[data-copy]');
+    if(select){stop();state.selected=Number(select.dataset.select);renderScripts();}
+    if(play){state.selected=Number(play.dataset.play);renderScripts();start();}
+    if(copy){const text=state.scripts[Number(copy.dataset.copy)].text;if(navigator.clipboard?.writeText){navigator.clipboard.writeText(text).then(()=>toast('文案已复制')).catch(()=>toast('复制失败，请手动复制'));}else{toast('当前环境不支持自动复制，请选中文字复制');}}
+  });
+  $('voiceGrid').addEventListener('click',e=>{const v=e.target.closest('[data-voice]');if(!v)return;stop();state.voice=v.dataset.voice;currentBlob=null;currentKey='';renderVoices();store();toast(`已切换到：${getCurrentVoice().name}`);});
+  for(const id of ['product','price','sellingPoint']){ $(id).value=state[id];$(id).addEventListener('input',e=>{state[id]=e.target.value;store();$('generatedTag').textContent='信息修改后请重新生成';}); }
+  document.querySelectorAll('[data-preset]').forEach(btn=>btn.addEventListener('click',()=>{const data=presets[btn.dataset.preset];for(const id of ['product','price','sellingPoint']){$(id).value=data[id];state[id]=data[id];}store();generate();}));
+  $('generateBtn').addEventListener('click',generate);
+  $('playBtn').addEventListener('click',()=>isPlaying?stop():start());
+  $('stopBtn').addEventListener('click',stop);
+  $('nextBtn').addEventListener('click',()=>{stop();state.selected=(state.selected+1)%3;renderScripts();start();});
+  $('downloadBtn').addEventListener('click',download);
+  $('rate').value=String(state.rate);$('rateText').textContent=(state.rate>=0?'+':'')+state.rate+'%';
+  $('rate').addEventListener('input',e=>{state.rate=Number(e.target.value);$('rateText').textContent=(state.rate>=0?'+':'')+state.rate+'%';currentBlob=null;currentKey='';store();});
+  $('loopDelay').value=String(state.delay);$('loopDelay').addEventListener('change',e=>{state.delay=Number(e.target.value);store();});
+  $('loopSwitch').addEventListener('click',()=>{state.loop=!state.loop;setLoop();toast(state.loop?'已开启循环播放':'已关闭循环播放');});
+  document.querySelectorAll('[data-nav]').forEach(link=>link.addEventListener('click',()=>{document.querySelectorAll('[data-nav]').forEach(a=>a.classList.remove('active'));link.classList.add('active');}));
+  window.addEventListener('pagehide',()=>stop());
+  const bars=[12,19,29,39,22,46,31,63,52,27,49,74,40,62,34,53,78,59,27,42,64,47,32,24,39,16,28,12];
+  $('visualizer').innerHTML=bars.map((h,i)=>`<span class="bar" style="--h:${h}px;--delay:-${(i*93)%680}ms"></span>`).join('');
+  state.scripts=createScripts();renderScripts();renderVoices();setLoop();detectServer();
+})();
+</script>
+</body>
+</html>
