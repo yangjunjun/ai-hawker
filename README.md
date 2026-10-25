@@ -34,3 +34,14 @@ npm start
 边界：现阶段的文案生成采用显式模板，不需要 LLM API Key，未接入真实大模型；在线 TTS 属于第三方非正式接口，依赖外网，可能有访问限制和可用性变化，不建议直接作为商业产品的服务等级保证。上线建议改接有授权的正式云 TTS API，并补充额度限制、账号、日志、审核、定价、隐私和商用条款。
 
 本项目使用原创抽象播音音色名称，不克隆演员声音。用户自行核实产品价格与卖点，不应使用虚假宣传，播放时须遵守当地商业噪声管理要求。
+
+## GitHub Pages 在线演示
+
+- 站点：https://yangjunjun.github.io/ai-hawker/
+- 工作流：[.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml)
+- 每次将代码推送至 `main`，自动检查并部署 `public/` 静态资源；也可在 Actions 中手动运行。
+- **首次启用：** 仓库 `Settings → Pages → Build and deployment → Source` 选择 **GitHub Actions**。如果此前未启用 Pages，需仓库管理员执行一次。
+
+**静态版的边界：** GitHub Pages 只能托管 HTML/CSS/JS，不运行 `server.mjs`。网页可直接生成 3 种叫卖文案，并使用浏览器 Web Speech API 试听和循环播放，但实际音色受浏览器与操作系统支持情况限制；在线神经音色与 MP3 下载需要单独运行 Node 服务或部署后端 API。
+
+如需完整体验，请在本地运行 `npm install && npm start` 并访问 `http://localhost:3000`。部署到云端时，应将前端请求的 `/api/health` 与 `/api/tts` 连接到具备 HTTPS 和 CORS 配置的正式 TTS 后端，并考虑调用额度与滥用限制。
