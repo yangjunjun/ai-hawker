@@ -1,0 +1,15 @@
+{
+  "name": "ai-hawker-voice-mvp",
+  "private": true,
+  "version": "0.1.0",
+  "description": "摊贩 AI 叫卖助手 - 单页 MVP + Node MP3 TTS",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs"
+  },
+  "engines": {"node": ">=20"},
+  "dependencies": {
+    "node-edge-tts": "^1.2.11"
+  }
+}
