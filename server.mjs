@@ -2,117 +2,76 @@ import http from 'node:http';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const root = path.join(__dirname, 'public');
-const port = Number(process.env.PORT || 3000);
-const voiceIds = new Set([
-  'zh-CN-YunjianNeural',
-  'zh-CN-liaoning-XiaobeiNeural',
-  'zh-CN-XiaoxiaoNeural',
-  'zh-CN-YunxiNeural',
-  'zh-CN-shaanxi-XiaoniNeural',
-  'zh-CN-YunyangNeural'
-]);
-const cache = new Map();
-const cacheMax = 40;
-const pending = new Map();
-
+import { randomUUID } from 'node:crypto';
+import { loadConfig } from './lib/ai/config.mjs';
+import { createAI } from './lib/ai/index.mjs';
+import { AIError, normalizeError } from './lib/ai/errors.mjs';
+const root = fileURLToPath(new URL('./public/', import.meta.url));
 function json(res, status, body) {
-  res.writeHead(status, {'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});
+  if (res.destroyed) return;
+  res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
   res.end(JSON.stringify(body));
 }
-function reject(res, status, message) { json(res, status, { error: message }); }
-
 async function readJSON(req) {
-  let size = 0;
-  const parts = [];
+  if (!/^application\/json(?:;|$)/i.test(req.headers['content-type'] || '')) throw new AIError('INVALID_INPUT', '请求需使用 application/json', 415);
+  const chunks = []; let size = 0;
   for await (const chunk of req) {
     size += chunk.length;
-    if (size > 8192) { const err = new Error('请求体过大'); err.code = 413; throw err; }
-    parts.push(chunk);
+    if (size > 8192) throw new AIError('BODY_TOO_LARGE', '请求体过大', 413);
+    chunks.push(chunk);
   }
-  try { return JSON.parse(Buffer.concat(parts).toString('utf8')); }
-  catch { const err = new Error('请求体不是有效 JSON'); err.code = 400; throw err; }
+  try { return JSON.parse(Buffer.concat(chunks).toString('utf8')); }
+  catch { throw new AIError('INVALID_JSON', '请求体不是有效 JSON', 400); }
 }
-
-async function synthesize(text, voice, rate) {
-  const key = JSON.stringify([text, voice, rate]);
-  if (cache.has(key)) {
-    const buf = cache.get(key);
-    cache.delete(key); cache.set(key, buf);
-    return buf;
-  }
-  if (pending.has(key)) return pending.get(key);
-  const job = (async () => {
-    // 独立依赖：浏览器试听无需该模块；npm install 后启用在线神经 TTS。
-    const { EdgeTTS } = await import('node-edge-tts');
-    const tts = new EdgeTTS({
-      voice, lang: 'zh-CN', rate: rate >= 0 ? `+${rate}%` : `${rate}%`,
-      outputFormat: 'audio-24khz-48kbitrate-mono-mp3',
-      timeout: 25000,
-      ...(process.env.TTS_PROXY ? { proxy: process.env.TTS_PROXY } : {})
-    });
-    const chunks = [];
-    for await (const chunk of tts.streamAudio(text)) {
-      if (Buffer.isBuffer(chunk)) chunks.push(chunk);
-    }
-    if (!chunks.length) throw new Error('TTS 服务未返回音频');
-    const buffer = Buffer.concat(chunks);
-    if (buffer.length > 8 * 1024 * 1024) throw new Error('音频超出大小限制');
-    cache.set(key, buffer);
-    if (cache.size > cacheMax) cache.delete(cache.keys().next().value);
-    return buffer;
-  })();
-  pending.set(key, job);
-  try { return await job; }
-  finally { pending.delete(key); }
-}
-
-const server = http.createServer(async (req, res) => {
-  const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-  if (url.pathname === '/api/health') return json(res, 200, { ok: true, provider: 'node-edge-tts' });
-  if (url.pathname === '/api/tts') {
-    if (req.method !== 'POST') return reject(res, 405, '仅支持 POST');
+export function createApp({ config = loadConfig(), ai = createAI(config), logger = console } = {}) {
+  let windowStart = Date.now(), requests = 0;
+  const server = http.createServer(async (req, res) => {
+    const requestId = randomUUID();
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    const controller = new AbortController();
+    res.on('close', () => { if (!res.writableEnded) controller.abort(); });
     try {
-      const input = await readJSON(req);
-      const text = String(input.text ?? '').trim();
-      const voice = String(input.voice ?? 'zh-CN-YunjianNeural');
-      const rate = Number(input.rate ?? 0);
-      if (text.length < 1 || text.length > 350) return reject(res, 400, '文字长度需为 1–350 个字符');
-      if (!voiceIds.has(voice)) return reject(res, 400, '不支持的音色');
-      if (!Number.isInteger(rate) || rate < -30 || rate > 30) return reject(res, 400, '语速超出允许范围');
-      const audio = await synthesize(text, voice, rate);
-      const requestedDownload = url.searchParams.get('download') === '1';
-      res.writeHead(200, {
-        'Content-Type': 'audio/mpeg',
-        'Content-Length': audio.length,
-        'Cache-Control':'no-store',
-        'Content-Disposition': requestedDownload ? `attachment; filename="hawker-voice.mp3"` : 'inline'
-      });
-      res.end(audio);
-    } catch (err) {
-      console.error('[TTS]', err?.message || err);
-      reject(res, err.code && Number.isInteger(err.code) ? err.code : 502,
-        err.code ? err.message : '在线语音服务暂时不可用；可以先使用浏览器语音试听');
+      const url = new URL(req.url, 'http://localhost');
+      if (url.pathname.startsWith('/api/')) {
+        const origin = req.headers.origin;
+        const sameOrigin = origin && ['http', 'https'].some(p => origin === `${p}://${req.headers.host}`);
+        if (origin && !sameOrigin && !config.allowedOrigins.includes(origin)) throw new AIError('ORIGIN_DENIED', '当前网页未被授权访问服务', 403);
+        if (origin) { res.setHeader('Access-Control-Allow-Origin', origin); res.setHeader('Vary', 'Origin'); }
+        if (req.method === 'OPTIONS') {
+          res.writeHead(204, { 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Max-Age': '600' });
+          res.end(); return;
+        }
+        if (!['/api/health', '/api/capabilities', '/api/scripts', '/api/tts'].includes(url.pathname)) throw new AIError('NOT_FOUND', '接口不存在', 404);
+        const read = ['/api/health', '/api/capabilities'].includes(url.pathname);
+        if (req.method !== (read ? 'GET' : 'POST')) throw new AIError('METHOD_NOT_ALLOWED', '请求方法不支持', 405);
+        if (url.pathname === '/api/health') return json(res, 200, { ok: true });
+        if (url.pathname === '/api/capabilities') return json(res, 200, ai.capabilities());
+        if (Date.now() - windowStart >= 60000) { windowStart = Date.now(); requests = 0; }
+        if (++requests > config.requestsPerMinute) { res.setHeader('Retry-After', '60'); throw new AIError('RATE_LIMIT', '请求过于频繁，请稍后重试', 429, true); }
+        const input = await readJSON(req);
+        if (url.pathname === '/api/scripts') return json(res, 200, await ai.generateScripts(input, { signal: controller.signal }));
+        const audio = await ai.synthesizeSpeech(input);
+        if (res.destroyed) return;
+        res.writeHead(200, { 'Content-Type': audio.contentType, 'Content-Length': audio.buffer.length, 'Cache-Control': 'no-store', 'Content-Disposition': `${url.searchParams.get('download') === '1' ? 'attachment' : 'inline'}; filename="hawker-voice.${audio.extension}"` });
+        res.end(audio.buffer); return;
+      }
+      if (!['GET', 'HEAD'].includes(req.method)) throw new AIError('METHOD_NOT_ALLOWED', '请求方法不支持', 405);
+      const assets = { '/': ['index.html', 'text/html; charset=utf-8'], '/index.html': ['index.html', 'text/html; charset=utf-8'], '/favicon.svg': ['favicon.svg', 'image/svg+xml'], '/config.js': ['config.js', 'text/javascript; charset=utf-8'] };
+      const asset = assets[url.pathname];
+      if (!asset) throw new AIError('NOT_FOUND', '资源不存在', 404);
+      const bytes = await readFile(path.join(root, asset[0]));
+      res.writeHead(200, { 'Content-Type': asset[1], 'Cache-Control': 'no-store' });
+      res.end(req.method === 'HEAD' ? undefined : bytes);
+    } catch (error) {
+      const e = normalizeError(error);
+      logger.error?.('[API]', { requestId, code: e.code, status: e.status });
+      json(res, e.status, { error: e.message, code: e.code, retryable: e.retryable, requestId });
     }
-    return;
-  }
-  if (req.method !== 'GET' && req.method !== 'HEAD') return reject(res, 405, '方法不支持');
-  const assets = {'/':'index.html','/index.html':'index.html','/favicon.svg':'favicon.svg'};
-  const asset = assets[url.pathname];
-  if (!asset) return reject(res, 404, '资源不存在');
-  try {
-    const bytes = await readFile(path.join(root, asset));
-    res.writeHead(200, {
-      'Content-Type': asset.endsWith('.svg') ? 'image/svg+xml' : 'text/html; charset=utf-8',
-      'Cache-Control': 'no-store',
-      'X-Content-Type-Options':'nosniff'
-    });
-    if (req.method === 'HEAD') res.end(); else res.end(bytes);
-  } catch { reject(res, 404, '资源不存在'); }
-});
-server.listen(port, process.env.HOST || '127.0.0.1', () => {
-  console.log(`\n  叫卖助手已启动：http://localhost:${port}`);
-  console.log('  试听：在线神经语音 / 浏览器回退；下载：MP3\n');
-});
+  });
+  server.requestTimeout = 15000; server.headersTimeout = 10000;
+  return server;
+}
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const config = loadConfig(); const server = createApp({ config });
+  server.listen(config.port, config.host, () => console.log(`叫卖助手 v0.2.0：http://${config.host}:${server.address().port}（文案 ${config.textProvider} / 语音 ${config.ttsProvider}）`));
+}
