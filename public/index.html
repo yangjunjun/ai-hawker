@@ -27,7 +27,7 @@
     <a href="#voice-panel" class="side-link" data-nav="voice"><span class="num">03</span> 音色与配音</a>
     <a href="#player-panel" class="side-link" data-nav="player"><span class="num">04</span> 音频工作台</a>
     <div class="side-bottom"><div class="label"><span class="dot"></span>为街头生意发声</div><p>不必自己喊，也能把好货告诉更多人。三步生成专属叫卖音频。</p></div>
-    <div class="side-foot">© 2026 响当当 · 产品原型 0.1</div>
+    <div class="side-foot">© 2026 响当当 · 产品原型 0.2</div>
   </aside>
   <main class="content">
     <header class="topbar"><div class="breadcrumb">工作台 / <b>创建叫卖音频</b></div><div class="top-actions"><span class="top-badge"><i class="circle"></i><span id="connectionText">浏览器试听模式</span></span><div class="avatar">AI</div></div></header>
@@ -44,6 +44,7 @@
             <div class="field full"><label>快速尝试 <small>点击换商品</small></label><div class="chips"><button type="button" class="chip" data-preset="apple">红富士苹果</button><button type="button" class="chip" data-preset="watermelon">现切西瓜</button><button type="button" class="chip" data-preset="corn">甜玉米</button><button type="button" class="chip" data-preset="strawberry">草莓</button></div></div>
           </div>
           <button class="generate-btn" id="generateBtn" type="button"><span>✦</span> 智能生成 3 条叫卖文案 <span>→</span></button>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap"><button type="button" class="chip" id="templateBtn">使用本地模板</button><span class="hint" id="generationStatus" role="status">本地模板 · 无需联网</span></div>
         </section>
         <section class="panel scripts-panel" id="scripts-panel">
           <div class="panel-head"><div class="panel-h"><div class="panel-icon">✎</div><div><div class="panel-title">你的专属叫卖文案</div><div class="panel-sub">3 种风格任你挑，还可以直接修改文字</div></div></div><div class="step-tag" id="generatedTag">已生成 3 条</div></div>
@@ -54,7 +55,7 @@
         <section class="panel" id="voice-panel">
           <div class="panel-head"><div class="panel-h"><div class="panel-icon">♫</div><div><div class="panel-title">挑一个好听的声音</div><div class="panel-sub">点击音色，试听不同的表达方式</div></div></div><div class="step-tag">STEP 02</div></div>
           <div class="voice-grid" id="voiceGrid"></div>
-          <div class="voice-footnote">注：“东北热情大哥”为普通话男声 + 东北风格文案；真正的方言音色可选择“辽宁女声”。浏览器离线试听时音色取决于系统支持情况。</div>
+          <div class="voice-footnote" id="voiceNote">注：“东北热情大哥”为普通话男声 + 东北风格文案；真正的方言音色可选择“辽宁女声”。浏览器离线试听时音色取决于系统支持情况。</div>
         </section>
         <section class="panel player-panel" id="player-panel">
           <div class="player-head"><h3>音频工作台</h3><div class="live-ind" id="modeStatus">准备就绪</div></div>
@@ -66,17 +67,18 @@
           <div class="play-mode"><span>↻ &nbsp;循环播放</span><div class="loop-details"><select id="loopDelay" class="timing" aria-label="循环间隔"><option value="2000">间隔 2 秒</option><option value="4000" selected>间隔 4 秒</option><option value="6000">间隔 6 秒</option></select><button type="button" id="loopSwitch" class="switch" role="switch" aria-checked="false" aria-label="循环播放开关"></button></div></div>
           <button type="button" class="export-btn" id="downloadBtn"><span>⇩</span> 下载 MP3 音频</button>
         </section>
-        <div class="notice"><strong>温馨提示：</strong> 请使用真实商品卖点，合理控制音量和播放时间。在线 MP3 使用第三方 TTS 服务，正式商用前需要更换为有授权及可用性保障的合成接口。</div>
+        <div class="notice"><strong>温馨提示：</strong> 请使用真实商品卖点，合理控制音量和播放时间。在线音频由所配置的语音服务生成，请核对商品信息；系统语音仅支持试听，不能导出音频。</div>
       </div>
     </div>
-    <footer class="work-footer"><span>用好听的声音，帮每一份认真经营被听见。</span><span>本地模板文案 · 中文配音 · 一键导出</span></footer>
+    <footer class="work-footer"><span>用好听的声音，帮每一份认真经营被听见。</span><span>模板 / AI 文案 · 中文配音 · 音频导出</span></footer>
   </main>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="config.js"></script>
 <script>
 (() => {
   const $ = (id) => document.getElementById(id);
-  const voices = [
+  const localVoices = [
     {id:'northeast-man',name:'东北热情大哥',desc:'东北吆喝风 · 男声',icon:'大',className:'orange',tts:'zh-CN-YunjianNeural',browserGender:'male'},
     {id:'liaoning',name:'辽宁方言女声',desc:'地道辽宁话音色',icon:'辽',className:'green',tts:'zh-CN-liaoning-XiaobeiNeural',browserGender:'female'},
     {id:'warm-lady',name:'亲切女声',desc:'温柔自然 · 女声',icon:'暖',className:'pink',tts:'zh-CN-XiaoxiaoNeural',browserGender:'female'},
@@ -84,6 +86,7 @@
     {id:'shaanxi',name:'陕西方言女声',desc:'陕西地方口音',icon:'陕',className:'yellow',tts:'zh-CN-shaanxi-XiaoniNeural',browserGender:'female'},
     {id:'announcer',name:'广播男声',desc:'稳重有力 · 男声',icon:'播',className:'purple',tts:'zh-CN-YunyangNeural',browserGender:'male'}
   ];
+  let voices = localVoices;
   const presets = {
     apple:{product:'红富士苹果',price:'5元一斤',sellingPoint:'新鲜到货'},
     watermelon:{product:'现切西瓜',price:'10元一盒',sellingPoint:'现切现卖'},
@@ -91,10 +94,41 @@
     strawberry:{product:'草莓',price:'15元一盒',sellingPoint:'颗颗饱满'}
   };
   let saved={};
-  try { saved=JSON.parse(localStorage.getItem('hawker-mvp-state') || '{}'); } catch {}
+  try { const value=JSON.parse(localStorage.getItem('hawker-mvp-state') || '{}'); if(value&&typeof value==='object'&&!Array.isArray(value))saved=value; } catch {}
   const state={ product: typeof saved.product==='string'?saved.product:'红富士苹果',price:typeof saved.price==='string'?saved.price:'5元一斤',sellingPoint:typeof saved.sellingPoint==='string'?saved.sellingPoint:'新鲜到货', voice: voices.some(x=>x.id===saved.voice)?saved.voice:'northeast-man', selected:0, rate:Number.isInteger(saved.rate)?Math.max(-30,Math.min(30,saved.rate)):10, loop: !!saved.loop, delay:[2000,4000,6000].includes(saved.delay)?saved.delay:4000, scripts: [] };
   const isStaticPages = /\.github\.io$/i.test(location.hostname);
-  let serverReady=false; let activeToken=0; let audio=null; let audioUrl=null; let speech=null; let timer=null; let tick=null; let currentBlob=null; let currentKey=''; let isPlaying=false; let progressStart=0; let progressEstimate=0; let toastTimer=null;
+  let apiBase = null;
+  try {
+    const configured = window.HAWKER_CONFIG?.apiBaseUrl?.trim();
+    if(configured){
+      const u=new URL(configured);
+      if(!/^https?:$/.test(u.protocol)||u.username||u.password||u.search||u.hash||(location.protocol==='https:'&&u.protocol!=='https:'))throw new Error('invalid API URL');
+      apiBase=u.href.replace(/\/$/,'');
+    } else if(/^https?:$/.test(location.protocol)&&!isStaticPages) apiBase=location.origin;
+  } catch { $('connectionText').textContent='API 地址配置无效 · 系统语音'; }
+  let caps={text:{enabled:false,provider:'template'},tts:{enabled:false,provider:'browser',format:null,rateMode:'percent'}};
+  let serverReady=false, activeToken=0, audio=null, audioUrl=null, speech=null, timer=null, tick=null, currentBlob=null, currentKey='', isPlaying=false, progressStart=0, progressEstimate=0, toastTimer=null;
+  let generationToken=0, generationController=null, playbackController=null, downloadController=null;
+  const apiUrl=path=>apiBase+path;
+  function invalidateAudio(){currentBlob=null;currentKey='';}
+  function cancelGeneration(){generationToken++;generationController?.abort();generationController=null;$('generateBtn').disabled=false;}
+  async function apiFetch(path,options={},signal){
+    const controller=new AbortController();
+    const cancel=()=>controller.abort();
+    if(signal?.aborted)cancel();else signal?.addEventListener('abort',cancel,{once:true});
+    const timeout=setTimeout(()=>controller.abort(new DOMException('请求超时','TimeoutError')),125000);
+    try{
+      const response=await fetch(apiUrl(path),{...options,signal:controller.signal});
+      if(!response.ok){const e=await response.json().catch(()=>({error:'在线服务不可用'}));throw new Error(e.error||'在线服务不可用');}
+      // Consume the body while the timeout/cancellation is still active.
+      if(path==='/api/tts'){
+        const blob=await response.blob();
+        if(!blob.size||!['audio/mpeg','audio/wav','audio/x-wav'].includes(blob.type.split(';')[0]))throw new Error('服务未返回有效音频');
+        return blob;
+      }
+      return await response.json();
+    } finally {clearTimeout(timeout);signal?.removeEventListener('abort',cancel);}
+  }
   const escapeHtml = str => String(str).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function store() {try{localStorage.setItem('hawker-mvp-state',JSON.stringify({product:state.product,price:state.price,sellingPoint:state.sellingPoint,voice:state.voice,rate:state.rate,loop:state.loop,delay:state.delay}));}catch{}}
   function toast(msg){ const e=$('toast'); e.textContent=msg; e.classList.add('show');clearTimeout(toastTimer); toastTimer=setTimeout(()=>e.classList.remove('show'),3600);}
@@ -117,13 +151,13 @@
     </div>`).join('');
     updateCurrentText();
   }
-  function renderVoices(){ $('voiceGrid').innerHTML=voices.map(v=>`<button type="button" class="voice-option ${v.id===state.voice?'selected':''}" data-voice="${v.id}" aria-pressed="${v.id===state.voice}"><span class="voice-avatar ${v.className}">${v.icon}</span><span class="voice-label"><div class="voice-name">${v.name}</div><div class="voice-desc">${v.desc}</div></span></button>`).join(''); }
+  function renderVoices(){ $('voiceGrid').innerHTML=voices.map(v=>`<button type="button" class="voice-option ${v.id===state.voice?'selected':''}" data-voice="${escapeHtml(v.id)}" aria-pressed="${v.id===state.voice}"><span class="voice-avatar ${v.className}">${escapeHtml(v.icon)}</span><span class="voice-label"><div class="voice-name">${escapeHtml(v.name)}</div><div class="voice-desc">${escapeHtml(v.desc)}</div></span></button>`).join(''); }
   function updateCurrentText(){ $('playingText').textContent=state.scripts[state.selected]?.text||'请选择一条文案'; }
   function setPlaying(on,info){isPlaying=on;$('player-panel').classList.toggle('playing',on);$('modeStatus').textContent=info||(on?'正在播报':'准备就绪');$('playBtn').textContent=on?'❚❚':'▶';$('playBtn').setAttribute('aria-label',on?'停止播放':'播放语音');}
   function setLoop(){ $('loopSwitch').classList.toggle('on',state.loop);$('loopSwitch').setAttribute('aria-checked',String(state.loop));store();}
   function getText(){return (state.scripts[state.selected]?.text||'').trim();}
   function stop(){
-    activeToken++;clearTimeout(timer); clearInterval(tick);timer=null;tick=null;
+    activeToken++;playbackController?.abort();playbackController=null;clearTimeout(timer); clearInterval(tick);timer=null;tick=null;
     if(audio){ audio.pause();audio.onended=null;audio.onerror=null;audio.src='';audio=null; }
     if(audioUrl){URL.revokeObjectURL(audioUrl);audioUrl=null;}
     if(window.speechSynthesis) speechSynthesis.cancel();
@@ -152,7 +186,7 @@
     if(!('speechSynthesis' in window)){setPlaying(false);toast('当前浏览器不支持语音朗读，请使用 Chrome / Edge。');return;}
     speechSynthesis.cancel();
     const ut = new SpeechSynthesisUtterance(text); speech=ut;
-    ut.lang='zh-CN';ut.rate=Math.max(.65,Math.min(1.4,1+state.rate/100));ut.pitch=state.voice==='northeast-man'? .84:1;
+    ut.lang='zh-CN';ut.rate=Math.max(.65,Math.min(1.4,1+(serverReady&&caps.tts.rateMode==='none'?0:state.rate)/100));ut.pitch=state.voice==='northeast-man'? .84:1;
     const available=speechSynthesis.getVoices().filter(v=>/^zh/i.test(v.lang));
     if(available.length){const prefer=getCurrentVoice().browserGender==='male' ? /(male|yun|男)/i : /(female|xia|女)/i;ut.voice=available.find(v=>prefer.test(v.name))||available[0];}
     ut.onend=()=>complete(token);
@@ -161,59 +195,95 @@
     setPlaying(true,'浏览器语音试听');
     speechSynthesis.speak(ut);
   }
-  async function onlineBlob(text){
-    const v=getCurrentVoice();const key=JSON.stringify([text,v.tts,state.rate]);
+  async function onlineBlob(text,signal){
+    const v=getCurrentVoice();const rate=caps.tts.rateMode==='none'?0:state.rate;
+    const key=JSON.stringify([caps.tts.provider,caps.tts.model,text,v.tts,rate,caps.tts.format]);
     if(currentBlob&&currentKey===key)return currentBlob;
-    const response=await fetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,voice:v.tts,rate:state.rate})});
-    if(!response.ok){const err=await response.json().catch(()=>({error:'TTS 服务错误'})); throw new Error(err.error||'在线服务不可用');}
-    const blob=await response.blob(); if(!blob.size)throw new Error('音频文件为空');
+    const blob=await apiFetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,voice:v.tts,rate})},signal);
+    if(signal?.aborted)throw new DOMException('请求已取消','AbortError');
     currentBlob=blob;currentKey=key;return blob;
   }
   async function start(isLoop=false){
     const text=getText();if(!text){toast('请先输入或生成叫卖文案');return;}
-    stop();const token=activeToken;
+    stop();const token=activeToken;playbackController=new AbortController();
     if(serverReady){
       setPlaying(true,'正在合成语音…');$('progressInner').style.width='0%';
       try {
-        const blob=await onlineBlob(text);
+        const blob=await onlineBlob(text,playbackController.signal);
         if(token!==activeToken)return;
         const url=URL.createObjectURL(blob);
-        audio=new Audio(url);audioUrl=url;
-        audio.onended=()=>{if(audioUrl){URL.revokeObjectURL(audioUrl);audioUrl=null;}complete(token); };
-        audio.onerror=()=>{if(audioUrl){URL.revokeObjectURL(audioUrl);audioUrl=null;}if(token===activeToken){toast('音频播放失败，已切换为浏览器语音');browserSpeak(text,token);}};
-        await audio.play();
-        if(token!==activeToken){audio.pause();if(audioUrl){URL.revokeObjectURL(audioUrl);audioUrl=null;}return;}
+        const player=new Audio(url);audio=player;audioUrl=url;
+        player.onended=()=>{URL.revokeObjectURL(url);if(audioUrl===url)audioUrl=null;complete(token); };
+        player.onerror=()=>{URL.revokeObjectURL(url);if(audioUrl===url)audioUrl=null;if(token===activeToken){toast('音频播放失败，已切换为浏览器语音');browserSpeak(text,token);}};
+        await player.play();
+        if(token!==activeToken){player.pause();URL.revokeObjectURL(url);if(audioUrl===url)audioUrl=null;return;}
         setPlaying(true,isLoop?'循环播放中':'神经语音播放中');progressLoop(token,Math.max(2,text.length*.25),true);
         return;
       } catch(err){ if(token!==activeToken)return;toast(`${err.message}，已尝试浏览器语音试听。`); }
     }
     browserSpeak(text,token);
   }
+  function downloadLabel(){return serverReady?`⇩ 下载 ${caps.tts.format.toUpperCase()} 音频`:'⇩ 下载音频（需连接服务）';}
   async function download(){
     const text=getText();if(!text){toast('请先输入叫卖文案');return;}
-    if(!serverReady){toast(isStaticPages ? 'GitHub Pages 只托管前端，MP3 下载需要 Node TTS 后端。请在本地运行 npm install && npm start。' : 'MP3 下载需要启动 Node 服务：运行 npm install && npm start，然后通过 localhost:3000 打开页面。');return;}
-    const btn=$('downloadBtn');btn.disabled=true;btn.textContent='正在制作 MP3 …';
+    if(!serverReady){toast('当前仅支持系统语音试听。下载音频需要连接 Node 服务。');return;}
+    if(downloadController)return;
+    const voiceName=getCurrentVoice().name, product=state.product;
+    const btn=$('downloadBtn');btn.disabled=true;btn.textContent='正在制作音频 …';
+    downloadController=new AbortController();
     try{
-      const blob=await onlineBlob(text);
+      const blob=await onlineBlob(text,downloadController.signal);
+      const extension=blob.type.split(';')[0]==='audio/mpeg'?'mp3':'wav';
       const url=URL.createObjectURL(blob);const a=document.createElement('a');
-      a.href=url;a.download=`${(state.product||'叫卖音频').replace(/[\\/:*?"<>|]/g,'').slice(0,22)}-${getCurrentVoice().name}.mp3`;
+      a.href=url;a.download=`${(product||'叫卖音频').replace(/[\\/:*?"<>|]/g,'').slice(0,22)}-${voiceName}.${extension}`;
       document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
-      toast('MP3 已生成并开始下载');
-    }catch(e){toast(`下载失败：${e.message}`);}
-    finally{btn.disabled=false;btn.innerHTML='<span>⇩</span> 下载 MP3 音频';}
+      toast(`${extension.toUpperCase()} 已生成并开始下载`);
+    }catch(e){if(e.name!=='AbortError')toast(`下载失败：${e.message}`);}
+    finally{downloadController=null;btn.disabled=false;btn.textContent=downloadLabel();}
   }
   async function detectServer(){
-    if(isStaticPages){$('connectionText').textContent='静态体验 · 系统语音';$('downloadBtn').title='GitHub Pages 不运行 Node TTS 服务，下载 MP3 需本地或独立后端';return;}
-    if(!/^https?:$/.test(location.protocol))return;
-    try{ const r=await fetch('/api/health',{signal:AbortSignal.timeout(2500)});if(!r.ok) return;const j=await r.json();if(!j.ok)return;serverReady=true;$('connectionText').textContent='神经配音已连接';$('connectionText').closest('.top-badge').style.color='#287c55';}catch{}
+    if(apiBase===null){$('downloadBtn').textContent=downloadLabel();return;}
+    try{
+      const r=await fetch(apiUrl('/api/capabilities'),{signal:AbortSignal.timeout(4000)});if(!r.ok)return;
+      const j=await r.json();if(!j.text||!j.tts||!Array.isArray(j.tts.voices))return;
+      if(j.tts.enabled&&(!['mp3','wav'].includes(j.tts.format)||!j.tts.voices.length))return;
+      caps=j;serverReady=Boolean(j.tts.enabled);
+      if(serverReady&&j.tts.provider!=='edge'){
+        stop();voices=j.tts.voices.map(v=>({id:v.id,name:v.name,desc:v.description,icon:v.name.slice(-1),className:'orange',tts:v.id,browserGender:v.gender}));
+        state.voice=voices.some(v=>v.id===saved.voice)?saved.voice:voices[0].id;
+        $('voiceNote').textContent='MiMo 预置中文音色 · 正常语速 · WAV 导出。服务失败时使用系统语音，音色可能不同。';renderVoices();store();
+      }
+      $('rate').disabled=serverReady&&j.tts.rateMode==='none';
+      if($('rate').disabled)$('rateText').textContent='正常语速';
+      $('downloadBtn').textContent=downloadLabel();
+      $('connectionText').textContent=`${j.text.enabled?'AI 文案':'本地文案'} · ${serverReady?(j.tts.provider==='mimo'?'MiMo 配音':'Edge 配音'):'系统语音'}`;
+      $('generationStatus').textContent=j.text.enabled?'MiMo 文案已配置 · 点击生成':'本地模板 · 无需联网';
+      $('generateBtn').textContent=j.text.enabled?'✦ AI 生成 3 条叫卖文案':'✦ 生成 3 条模板文案';
+    }catch{ $('connectionText').textContent='服务未连接 · 系统语音'; }
   }
-  function generate(){
-    const product=$('product').value.trim();const price=$('price').value.trim();
+  async function generate(useTemplate=false){
+    const product=$('product').value.trim(), price=$('price').value.trim();
     if(!product){$('product').focus();toast('请填写商品名称');return;}
     if(!price){$('price').focus();toast('请填写售卖价格');return;}
-    stop();state.product=product;state.price=price;state.sellingPoint=$('sellingPoint').value.trim();state.scripts=createScripts();state.selected=0;currentBlob=null;currentKey='';store();renderScripts();$('generatedTag').textContent='刚刚生成 3 条';toast('三条风格文案已生成，可以直接编辑或试听');
+    cancelGeneration();stop();const token=generationToken;
+    state.product=product;state.price=price;state.sellingPoint=$('sellingPoint').value.trim();store();
+    if(useTemplate||!caps.text.enabled){
+      state.scripts=createScripts();state.selected=0;invalidateAudio();renderScripts();
+      $('generatedTag').textContent='本地模板 · 3 条';$('generationStatus').textContent='本地模板已生成，可编辑或试听';return;
+    }
+    generationController=new AbortController();$('generateBtn').disabled=true;
+    $('generationStatus').textContent='正在生成 AI 文案… 修改内容会取消本次生成';
+    try{
+      const result=await apiFetch('/api/scripts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product,price,sellingPoint:state.sellingPoint})},generationController.signal);
+      if(token!==generationToken)return;
+      const order=['enthusiastic','playful','concise'];
+      if(!Array.isArray(result.scripts)||result.scripts.length!==3||!order.every(style=>result.scripts.filter(s=>s.style===style&&typeof s.text==='string'&&s.text.trim()&&s.text.length<=350).length===1))throw new Error('文案格式无效');
+      stop();state.scripts=createScripts().map((s,i)=>({...s,text:result.scripts.find(x=>x.style===order[i]).text}));state.selected=0;invalidateAudio();renderScripts();
+      $('generatedTag').textContent='MiMo · 3 条';$('generationStatus').textContent='AI 文案已生成，请核对商品、价格和卖点';
+    }catch(e){if(token===generationToken&&e.name!=='AbortError'){$('generationStatus').textContent=`${e.message}；已保留文案，可使用本地模板`;toast('AI 文案生成失败，已保留当前内容');}}
+    finally{if(token===generationToken){generationController=null;$('generateBtn').disabled=false;}}
   }
-  $('scriptsWrap').addEventListener('input',e=>{const index=Number(e.target?.dataset?.script);if(!Number.isInteger(index)||!(index>=0&&index<3))return;state.scripts[index].text=e.target.value;if(state.selected===index)updateCurrentText();currentBlob=null;currentKey='';});
+  $('scriptsWrap').addEventListener('input',e=>{const index=Number(e.target?.dataset?.script);if(!Number.isInteger(index)||!(index>=0&&index<3))return;cancelGeneration();stop();$('generationStatus').textContent='文案已手动修改';state.scripts[index].text=e.target.value;if(state.selected===index)updateCurrentText();currentBlob=null;currentKey='';});
   $('scriptsWrap').addEventListener('click',e=>{
     const select=e.target.closest('[data-select]');const play=e.target.closest('[data-play]');const copy=e.target.closest('[data-copy]');
     if(select){stop();state.selected=Number(select.dataset.select);renderScripts();}
@@ -221,22 +291,23 @@
     if(copy){const text=state.scripts[Number(copy.dataset.copy)].text;if(navigator.clipboard?.writeText){navigator.clipboard.writeText(text).then(()=>toast('文案已复制')).catch(()=>toast('复制失败，请手动复制'));}else{toast('当前环境不支持自动复制，请选中文字复制');}}
   });
   $('voiceGrid').addEventListener('click',e=>{const v=e.target.closest('[data-voice]');if(!v)return;stop();state.voice=v.dataset.voice;currentBlob=null;currentKey='';renderVoices();store();toast(`已切换到：${getCurrentVoice().name}`);});
-  for(const id of ['product','price','sellingPoint']){ $(id).value=state[id];$(id).addEventListener('input',e=>{state[id]=e.target.value;store();$('generatedTag').textContent='信息修改后请重新生成';}); }
+  for(const id of ['product','price','sellingPoint']){ $(id).value=state[id];$(id).addEventListener('input',e=>{cancelGeneration();$('generationStatus').textContent='商品信息已修改，请重新生成';state[id]=e.target.value;store();$('generatedTag').textContent='信息修改后请重新生成';}); }
   document.querySelectorAll('[data-preset]').forEach(btn=>btn.addEventListener('click',()=>{const data=presets[btn.dataset.preset];for(const id of ['product','price','sellingPoint']){$(id).value=data[id];state[id]=data[id];}store();generate();}));
-  $('generateBtn').addEventListener('click',generate);
+  $('generateBtn').addEventListener('click',()=>generate());
+  $('templateBtn').addEventListener('click',()=>generate(true));
   $('playBtn').addEventListener('click',()=>isPlaying?stop():start());
   $('stopBtn').addEventListener('click',stop);
   $('nextBtn').addEventListener('click',()=>{stop();state.selected=(state.selected+1)%3;renderScripts();start();});
   $('downloadBtn').addEventListener('click',download);
   $('rate').value=String(state.rate);$('rateText').textContent=(state.rate>=0?'+':'')+state.rate+'%';
-  $('rate').addEventListener('input',e=>{state.rate=Number(e.target.value);$('rateText').textContent=(state.rate>=0?'+':'')+state.rate+'%';currentBlob=null;currentKey='';store();});
+  $('rate').addEventListener('input',e=>{stop();state.rate=Number(e.target.value);$('rateText').textContent=(state.rate>=0?'+':'')+state.rate+'%';currentBlob=null;currentKey='';store();});
   $('loopDelay').value=String(state.delay);$('loopDelay').addEventListener('change',e=>{state.delay=Number(e.target.value);store();});
   $('loopSwitch').addEventListener('click',()=>{state.loop=!state.loop;setLoop();toast(state.loop?'已开启循环播放':'已关闭循环播放');});
   document.querySelectorAll('[data-nav]').forEach(link=>link.addEventListener('click',()=>{document.querySelectorAll('[data-nav]').forEach(a=>a.classList.remove('active'));link.classList.add('active');}));
-  window.addEventListener('pagehide',()=>stop());
+  window.addEventListener('pagehide',()=>{stop();cancelGeneration();downloadController?.abort();});
   const bars=[12,19,29,39,22,46,31,63,52,27,49,74,40,62,34,53,78,59,27,42,64,47,32,24,39,16,28,12];
   $('visualizer').innerHTML=bars.map((h,i)=>`<span class="bar" style="--h:${h}px;--delay:-${(i*93)%680}ms"></span>`).join('');
-  state.scripts=createScripts();renderScripts();renderVoices();setLoop();detectServer();
+  state.scripts=createScripts();renderScripts();renderVoices();setLoop();$('generatedTag').textContent='本地模板 · 3 条';$('downloadBtn').textContent=downloadLabel();detectServer();
 })();
 </script>
 </body>
